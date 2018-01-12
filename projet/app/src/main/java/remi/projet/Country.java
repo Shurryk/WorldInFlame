@@ -40,6 +40,16 @@ public class Country {
         return _factories;
     }
 
+    public ArrayList<Factory> getFactoriesActive() {
+        ArrayList<Factory> factoriesActive = new ArrayList<>();
+        for(Factory f:_factories){
+            if(f.getStateFactory() == State.Active){
+                factoriesActive.add(f);
+            }
+        }
+        return factoriesActive;
+    }
+
     public void addFactory(String name, String code, int color){
         _factories.add(new Factory(code, name, color));
     }
