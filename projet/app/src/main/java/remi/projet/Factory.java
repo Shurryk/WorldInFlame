@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import android.content.ActivityNotFoundException;
 import android.graphics.Color;
 
-public class Factory
-{
+public class Factory {
     private String codeFactory;
     private String nameFactory;
     private State stateFactory;
