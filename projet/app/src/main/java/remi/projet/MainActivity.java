@@ -1,6 +1,8 @@
 package remi.projet;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.support.v4.view.GravityCompat;
@@ -13,6 +15,56 @@ import java.util.Observer;
 public class MainActivity extends AppCompatActivity implements Observer {
     public static Context context;
 
+    //Variables globales
+    public int idTour = 0;
+    public int impulseTour = 0;
+    public String initTour = "";
+
+    public void checkTour() {
+
+        impulseTour += 1;
+        if(impulseTour > 13 || idTour == 0){
+            idTour += 1;
+            impulseTour = 0;
+            getInitiative();
+        }
+    }
+
+    public void getInitiative() {
+        // setup the alert builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Groupe à l'initiative");
+
+
+        // add a radio button list
+        String[] contriesGroup = {"Axe", "Aliés"};
+        int checkedItem = 1; // cow
+        builder.setSingleChoiceItems(contriesGroup, checkedItem, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // user checked an item
+            }
+        });
+
+        // add OK and Cancel buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(which == 1){
+                    initTour = "Axe";
+                }
+                else {
+                    initTour = "Aliés";
+                }
+            }
+        });
+        builder.setNegativeButton("Retour", null);
+
+        // create and show the alert dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
         RightDrawerController RDC = RightDrawerController.Instance();
         RDC.setUtils();
 
+        getInitiative();
         setContentView(Drawer.Instance());
     }
 
