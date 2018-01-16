@@ -6,7 +6,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-public class MainContentController extends Controller {
+public class MainContentController implements View.OnClickListener {
     private static MainContentController instance = null;
     public Model _m;
     public Drawer _d;
@@ -32,17 +32,13 @@ public class MainContentController extends Controller {
         Log.d("erreur", "Click on " + v.getTag());
         Button b = _d.findViewWithTag(v.getTag());
         if (v.getTag() == "AddFactory") {
-            if (_d.currentCountry == "") {
-
-            } else {
-                LinearLayout ll = _d.findViewById(R.id.linearLayoutLeft);
-                ll.setVisibility(View.VISIBLE);
-                Toast.makeText(MainActivity.context,
-                        "Add Factory Panel is now visible in the left drawer.",
-                        Toast.LENGTH_SHORT).show();
-                _d.open("LEFT");
-                _m.setScreen("Drawer");
-            }
+            LinearLayout ll = _d.findViewById(R.id.linearLayoutLeft);
+            ll.setVisibility(View.VISIBLE);
+            Toast.makeText(MainActivity.context,
+                    "Add Factory Panel is now visible in the left drawer.",
+                    Toast.LENGTH_SHORT).show();
+            _d.open("LEFT");
+            _m.setScreen("Drawer");
         }
         else if(b != null){
             Log.d("erreur", "Button : " + b.getText().toString() + " pressed.");

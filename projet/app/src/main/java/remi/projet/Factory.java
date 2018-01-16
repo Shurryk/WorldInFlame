@@ -1,16 +1,22 @@
 package remi.projet;
 
-public class Factory
-{
+import java.util.ArrayList;
+
+import android.content.ActivityNotFoundException;
+import android.graphics.Color;
+
+public class Factory {
     private String codeFactory;
     private String nameFactory;
     private State stateFactory;
     private int colorFactory;
     public int idFactory;
 
-    public Factory (String code, String name, int color, State state)
+    private static ArrayList<Factory> factories;
+
+    public Factory (String code, String name, int color)
     {
-        setEverything(code, name, color, state);
+        setEverything(code, name, color, State.Active);
     }
 
     public String toString()
@@ -24,8 +30,16 @@ public class Factory
         return ret.toString();
     }
 
+    public static ArrayList<Factory> getFactories(){
+        if(factories == null)
+            factories = new ArrayList<Factory>();
+        return factories;
+    }
+
+    public void addFactory(ArrayList<Factory> listFactory) { listFactory.add(this); }
+
     public void setEverything(String code, String name, int color, State state) {
-        this.codeFactory = code;
+        setCodeFactory(code);
         this.nameFactory = name;
         setStateFactory(state);
         this.colorFactory = color;
@@ -35,10 +49,13 @@ public class Factory
     public String getCodeFactory() {
         return codeFactory;
     }
+    public void setCodeFactory(String code) { this.codeFactory = code; }
     public String getName() {
         return nameFactory;
     }
-    public int getColorFactory(){ return colorFactory; }
+    public int getColorFactory(){
+        return colorFactory;
+    }
     public State getStateFactory(){ return this.stateFactory; }
     public void setStateFactory(State state){ this.stateFactory = state; }
     public void setIdFactory(int idFactory){
