@@ -1,10 +1,13 @@
 package remi.projet;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Drawer extends DrawerLayout {
     private static Drawer instance = null;
@@ -114,8 +118,9 @@ public class Drawer extends DrawerLayout {
 
         Controller MainController = MainContentController.Instance();
         Log.d("myDebug","inflation MyDrawer");
-
-        buttonSetting(linearLayout, "Add Factory in Left Drawer", "AddFactory", MainController);
+        if(currentCountry != "") {
+            buttonSetting(linearLayout, "Add Factory in Left Drawer", "AddFactory", MainController);
+        }
         buttonSetting(linearLayout, "France", "bFrance", MainController);
         buttonSetting(linearLayout, "Germany", "bGermany", MainController);
         buttonSetting(linearLayout, "Spain", "bSpain", MainController);
@@ -246,5 +251,54 @@ public class Drawer extends DrawerLayout {
         if(s == "RIGHT")
             if (!drawer.isDrawerOpen(GravityCompat.END))
                 drawer.openDrawer(GravityCompat.END);
+    }
+
+    public void addFactoryDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.context);
+        // Get the layout inflater
+        LayoutInflater inflater = LayoutInflater.from(MainActivity.context);
+
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog layout
+        builder.setView(inflater.inflate(R.layout.add_factory, null));
+        builder.setPositiveButton("Ajout", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                Log.d("myDebug", "Cliquer sur Ajout");
+
+                EditText name = findViewById(R.id.et_nameF);
+                Log.d("myDebug", "là 1");
+                String sName = name.getText().toString();
+                Log.d("myDebug", "là 2");
+                EditText code = findViewById(R.id.et_codeF);
+                Log.d("myDebug", "là 3");
+                String sCode = name.getText().toString();
+                Log.d("myDebug", "là 4");
+
+                Log.d("myDebug", "Ceci est nul : " + sName + " " + sCode);
+
+                int color = Color.RED;
+                if(sName.trim().length() != 0 && sCode.trim().length() != 0) {
+                    Model.getCountry(currentCountry).addFactory(name.toString(), code.toString(), color, State.Active);
+                    LinearLayout ll = findViewById(R.id.linearLayoutLeft);
+                    ll.setVisibility(View.INVISIBLE);
+                    Toast.makeText(MainActivity.context,
+                            "Factory added.",
+                            Toast.LENGTH_SHORT).show();
+                    close();
+                    Model.Instance().setScreen("Drawer");
+                } else {
+                    Toast.makeText(MainActivity.context,
+                            "The form isn't correctly filled.",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        builder.setNegativeButton("Retour", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

@@ -31,18 +31,16 @@ public class MainContentController extends Controller {
         // Handle navigation view item clicks here.
         Log.d("erreur", "Click on " + v.getTag());
         Button b = _d.findViewWithTag(v.getTag());
-        if (v.getTag() == "AddFactory") {
-            if (_d.currentCountry == "") {
-
-            } else {
-                LinearLayout ll = _d.findViewById(R.id.linearLayoutLeft);
-                ll.setVisibility(View.VISIBLE);
-                Toast.makeText(MainActivity.context,
-                        "Add Factory Panel is now visible in the left drawer.",
-                        Toast.LENGTH_SHORT).show();
-                _d.open("LEFT");
-                _m.setScreen("Drawer");
-            }
+        if (v.getTag() == "AddFactory")
+        {
+            /*LinearLayout ll = _d.findViewById(R.id.linearLayoutLeft);
+            ll.setVisibility(View.VISIBLE);
+            Toast.makeText(MainActivity.context,
+                    "Add Factory Panel is now visible in the left drawer.",
+                    Toast.LENGTH_SHORT).show();
+            _d.open("LEFT");
+            _m.setScreen("Drawer");*/
+            _d.addFactoryDialog();
         }
         else if(b != null){
             Log.d("erreur", "Button : " + b.getText().toString() + " pressed.");
