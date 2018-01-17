@@ -13,65 +13,21 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class Drawer extends DrawerLayout{
+public class Drawer extends DrawerLayout {
     private static Drawer instance = null;
-    public RightDrawerController _dController;
-
-    public EditText _etNameF;
-    public EditText _etCodeF;
-    public Button _bAdd;
-    public Button _bBack;
 
     public String currentCountry = "";
     public boolean _modify = false;
     public Factory _modifFactory = null;
 
+    EditText _etNameF = null;
+    EditText _etCodeF = null;
+
     protected Drawer(){
         super(MainActivity.context);
-        Log.d("myDebug","Constructor Drawer");
-
         LayoutInflater inflater = LayoutInflater.from(MainActivity.context);
         inflater.inflate(R.layout.activity_main,this);
-        _dController = RightDrawerController.Instance();
-        Log.d("myDebug","inflation MyDrawer");
-
-        LinearLayout linearLayoutLeft = findViewById(R.id.linearLayoutLeft);
-        Log.d("myDebug","LinearLayout getting");
-
-        _etNameF = new EditText(MainActivity.context);
-        _etCodeF = new EditText(MainActivity.context);
-        _bAdd = new Button(MainActivity.context);
-        _bBack = new Button(MainActivity.context);
-        Log.d("myDebug","Input creation");
-
-        _etNameF.setHint("Nom de l'usine");
-        _etCodeF.setHint("Case de l'usine");
-        _bAdd.setText("Ajout");
-        _bAdd.setTag("bAdd");
-        _bBack.setText("Retour");
-        _bBack.setTag("bBack");
-        Log.d("myDebug","Input modification");
-
-        _etNameF.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT));
-        _etCodeF.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT));
-        _bAdd.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT));
-        _bBack.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT));
-        Log.d("myDebug","Params setting");
-
-        linearLayoutLeft.addView(_etNameF);
-        linearLayoutLeft.addView(_etCodeF);
-        linearLayoutLeft.addView(_bAdd);
-        linearLayoutLeft.addView(_bBack);
-        Log.d("myDebug","Input adding");
-
-        _bAdd.setOnClickListener(_dController);
-        _bBack.setOnClickListener(_dController);
-        Log.d("myDebug","Buttons set to Controller");
-
+        Log.d("myDebug","Constructor Drawer");
         fill("");
         Log.d("myDebug","App Created");
     }
@@ -83,14 +39,25 @@ public class Drawer extends DrawerLayout{
     }
 
     public void fill(String s){
+        Log.d("myDebug", "fill.");
         fillRightDrawer(s);
+        Log.d("myDebug", "fillR");
         fillMainContent();
+        Log.d("myDebug", "fillM");
+        fillLeftDrawer(s);
+        Log.d("myDebug", "fillL");
     }
 
     private void fillRightDrawer(String s){
+        Log.d("myDebug", "fillR_start");
         currentCountry = s;
-        LinearLayout linearLayoutRight = findViewById(R.id.linearLayoutRight);
-        linearLayoutRight.removeAllViews();
+        Log.d("myDebug", "fillR_country_string");
+        LinearLayout llr = findViewById(R.id.linearLayoutRight);
+        Log.d("myDebug", "Number of child in llr : " + llr.getChildCount());
+        if(llr.getChildCount() != 0) {
+            llr.removeAllViewsInLayout();
+            //llr.removeAllViews();
+        }
         Log.d("myDebug", "Layout Found and Views removed");
 
         ImageView imageView = new ImageView(MainActivity.context);
@@ -110,10 +77,10 @@ public class Drawer extends DrawerLayout{
         }
 
         //which adds the imageview to your layout
-        linearLayoutRight.addView(imageView);
+        llr.addView(imageView);
         Log.d("myDebug", "Flag set and added.");
 
-        textViewSetting(linearLayoutRight, currentCountry, Color.DKGRAY);
+        textViewSetting(llr, currentCountry, Color.DKGRAY);
         Log.d("myDebug", "Country name set and added.");
         if(Model.getCountry(currentCountry) != null) {
             for (Factory f : Model.getCountry(currentCountry).getFactories()) {
@@ -130,7 +97,7 @@ public class Drawer extends DrawerLayout{
                 }
 
                 Log.d("myDebug", "TextView : " + f.toString() + " added to list.");
-                linearLayoutRight.addView(ll);
+                llr.addView(ll);
             }
         }
     }
@@ -145,14 +112,50 @@ public class Drawer extends DrawerLayout{
         linearLayout.removeAllViews();
         Log.d("erreur","LinearLayout get and cleaned");
 
-        buttonSetting(linearLayout, "Add Factory in Left Drawer", "AddFactory");
-        buttonSetting(linearLayout, "France", "bFrance");
-        buttonSetting(linearLayout, "Germany", "bGermany");
-        buttonSetting(linearLayout, "Spain", "bSpain");
-        buttonSetting(linearLayout, "UK", "bUK");
+        Controller MainController = MainContentController.Instance();
+        Log.d("myDebug","inflation MyDrawer");
+
+        buttonSetting(linearLayout, "Add Factory in Left Drawer", "AddFactory", MainController);
+        buttonSetting(linearLayout, "France", "bFrance", MainController);
+        buttonSetting(linearLayout, "Germany", "bGermany", MainController);
+        buttonSetting(linearLayout, "Spain", "bSpain", MainController);
+        buttonSetting(linearLayout, "UK", "bUK", MainController);
     }
 
-    private void buttonSetting(LinearLayout l, String text, String tag){
+    private void fillLeftDrawer(String s){
+        currentCountry = s;
+        LinearLayout lll = findViewById(R.id.linearLayoutLeft);
+        lll.removeAllViews();
+        Log.d("myDebug", "Layout Found and Views removed");
+
+        Controller leftController = LeftDrawerController.Instance();
+        Log.d("myDebug","inflation MyDrawer");
+
+        textViewSetting(lll, s, Color.BLUE);
+
+        _etNameF = new EditText(MainActivity.context);
+        _etCodeF = new EditText(MainActivity.context);
+        Log.d("myDebug","Input creation");
+
+        _etNameF.setHint("Nom de l'usine");
+        _etCodeF.setHint("Case de l'usine");
+
+        _etNameF.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+        _etCodeF.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+        Log.d("myDebug","Params setting");
+
+        lll.addView(_etNameF);
+        lll.addView(_etCodeF);
+        Log.d("myDebug","Input adding");
+
+        buttonSetting(lll, "Ajout", "bAdd", leftController);
+        buttonSetting(lll, "Retour", "bBack", leftController);
+        Log.d("myDebug","Button set");
+    }
+
+    protected void buttonSetting(LinearLayout l, String text, String tag, Controller controller){
         Button b = new Button(MainActivity.context);
         b.setText(text);
         b.setTag(tag);
@@ -163,11 +166,11 @@ public class Drawer extends DrawerLayout{
         l.addView(b);
         Log.d("erreur","View Added");
 
-        b.setOnClickListener(MainContentController.Instance());
+        b.setOnClickListener(controller);
         Log.d("erreur","Controller Setting");
     }
 
-    private void buttonEditSetting(LinearLayout ll, Factory f){
+    protected void buttonEditSetting(LinearLayout ll, Factory f){
         Button b = new Button(MainActivity.context);
         b.setText("✎");
         b.setTag(f.getCodeFactory());
@@ -182,7 +185,7 @@ public class Drawer extends DrawerLayout{
         Log.d("erreur","Controller Setting");
     }
 
-    private void textViewSetting(LinearLayout l, String text, int color){
+    protected void textViewSetting(LinearLayout l, String text, int color){
         TextView tv = new TextView(MainActivity.context);
         tv.setText(text);
         tv.setTextColor(color);
@@ -193,7 +196,7 @@ public class Drawer extends DrawerLayout{
         Log.d("myDebug","View Added");
     }
 
-    private void textViewSettingFactory(LinearLayout l, Factory f){
+    protected void textViewSettingFactory(LinearLayout l, Factory f){
         TextView tv = new TextView(MainActivity.context);
         tv.setText(f.toString());
         tv.setTextColor(f.getColorFactory());
